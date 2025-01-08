@@ -3,21 +3,65 @@ const app = express();
 const connectDB = require("./config/database");
 const User = require("./models/User");
 const { ReturnDocument } = require('mongodb');
+const { validateSignUpData } = require('./utils/validation');
+const bcrypt = require("bcrypt");
+const validator = require("validator");
+
 
 // we use the middleware express.json() to conver the req.data to all the routes that why we do not use any route
 app.use(express.json());
 
 app.post('/signup', async (req,res)=>{
-    const user = new User(req.body);
+    
     try {
+        //first thing is validation your data 
+        validateSignUpData(req);
+
+        
+        //encrypting the password
+        const {firstName, lastName, emailId, password} = req.body;
+        const passwordHash = await bcrypt.hash(password,10);
+        // console.log(passwordHash);
+
+
+        // creating new instance of the user model
+        // const user = new User(req.body) //bad way because whatever is comming will be pushed.
+        const user = new User({
+        firstName,lastName,emailId, password:passwordHash,
+        });
         // console.log(req.body)
         await user.save();        
         res.send("User added successfully!");
     } catch (error) {
-        res.status(400).send("Error saving the user"+error.message)
+        res.status(400).send("ERROR : "+error.message)
     }
 });
 
+app.post('/login', async(req,res) =>{
+    try {
+        
+        const {emailId,password} = req.body;
+        
+        if(!validator.isEmail(emailId)){
+            throw new Error("Please enter the valid Email.");
+        }
+        const user = await User.findOne({emailId:emailId})
+        if(!user){
+            throw new Error("Invalid credentials."); // do not write this -> Email id is not present in the DB
+        }
+        
+        const isPasswordValid = await bcrypt.compare(password,user.password);
+        if(isPasswordValid){
+            res.send("Login successfully.");
+        }
+        else{
+            throw new Error("Invalid credentials."); // don not write this -> Password is not correct
+        }
+    } 
+    catch (error) {
+        res.status(400).send("ERROR : "+error.message)
+    }
+})
 // feed api - GET /user - get all the users from the database.
 app.get('/user', async (req,res)=>{
     const userName = req.body.firstName;
