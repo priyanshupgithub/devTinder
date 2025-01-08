@@ -2,23 +2,53 @@ const mongoose = require('mongoose')
 
 const userSchema = mongoose.Schema({
     firstName:{
-        type:String
+        type:String,
+        required:true,
+        minLength:2,
+        maxLength:60,
     },
     lastName:{
         type:String
     },
     emailId:{
-        type:String
+        type:String,
+        required:true,
+        unique:true,
+        lowercase:true,
+        trim:true,
+
     },
     password:{
-        type:String
+        type:String,
+        required:true,
     },
     age:{
-        type:Number
+        type:Number,
+        min:18,
+        max:108
     },
     gender:{
-        type:String
+        type:String,
+        validate(value){   //here we added a custom validation function and this validator functions runs onyl on creating new user and does not run/validate when patch(existing data) so for run this we have to add it in the patch api in (options)
+            if(!["male","female","others"].includes(value)){
+                throw new Error("Gender data is not valid");
+            }
+        }
     },
+    photoUrl:{
+        type:String,
+        default:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWRrWgjZtjvfCpKF-uof_08e89WR9269oYsA&s"
+    },
+    about:{
+        type:String,
+        default:"this is the default about ."
+    },
+    skills:{
+        type:[String]
+    }
+},
+{
+    timestamps:true,
 })
 
 const User = new mongoose.model("User",userSchema)
