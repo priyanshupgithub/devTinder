@@ -52,15 +52,30 @@ app.delete('/user', async (req,res)=>{
 
 // update data of the user
 // also while we are updating the field which are not present in the schema then it will not update those field
-app.patch('/user', async (req,res)=>{
-    const userId =  req.body.userId;
+app.patch('/user/:userId', async (req,res)=>{
+    const userId =  req.params?.userId;
     const data = req.body;
     try {
-        const user = await User.findByIdAndUpdate({_id:userId}, data, {ReturnDocument:"after",runValidators:true,}) //here the third parameter is the options (object) -> optional see 
+        // ALLOWED CHANGES -  we do not want that the user will change the unwanted changes like email,age etc
+        const ALLOWED_UPDATES = [
+            "lastName","gender","about","skills","photoUrl","age","password"
+        ];
+    
+        const isUpdateAllowed = Object.keys(data).every((k)=>
+            ALLOWED_UPDATES.includes(k)
+        );
+
+        if(!isUpdateAllowed){
+            throw new Error ("Update not allowed on these values");
+        }
+        if(data?.skills.length > 10){
+            throw new Error("Skills cannot be more than 10");
+        }
+        const user = await User.findByIdAndUpdate({_id:userId}, data, {ReturnDocument:"after",runValidators:true,}); //here the third parameter is the options (object) -> optional see 
         // console.log(user);
         res.send("user updated successfully.");
     } catch (error) {
-        res.status(400).send("update faild"+error.message);
+        res.status(400).send("update failed "+error.message);
     }
 })
  
