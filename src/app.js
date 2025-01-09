@@ -56,14 +56,20 @@ app.post('/login', async(req,res) =>{
             throw new Error("Invalid credentials."); // do not write this -> Email id is not present in the DB
         }
         
-        const isPasswordValid = await bcrypt.compare(password,user.password);
+        // below line will offload into userSchema instead of below line we are using the line which is below of below line
+        // const isPasswordValid = await bcrypt.compare(password,user.password);//first pass is which is comming from req, and the second is which is actual passwordHash
+        const isPasswordValid = await user.validatePassword(password)
+
         if(isPasswordValid){
             //create the JWT(json web tokens red(header), pink(payload->data(hidden thing)),blue(signature to check the token)) token
-            const token = await jwt.sign({_id:user._id},"DEV@Tinder$790");
-            console.log(token);
+
+            // we are offlaod the below line into the userschema to clear or refactor the code beacause it is related to the userschema
+            // const token = await jwt.sign({_id:user._id},"DEV@Tinder$790",{expiresIn:"7d"}); // 3 rd parameter is to expore the token
+            const token = await user.getJWT(); //we are using this line instead of this above line as this make the code modular, testable, readable,reusable
+            // console.log(token);
 
             // add the token to the cookie and send the response to the user
-            res.cookie("token", token );
+            res.cookie("token", token,{httpOnly:true,expires:new Date(Date.now()+8*3600000)} );//cookies will expire after 8 hours
 
             res.send("Login successfully.");
         }
@@ -86,68 +92,18 @@ app.get("/profile", userAuth, async(req,res)=>{
     }
 });
 
-
-// feed api - GET /user - get all the users from the database.
-app.get('/user', async (req,res)=>{
-    const userName = req.body.firstName;
+app.get("/senConnectionRequest", userAuth, async(req,res)=>{
     try {
-        // const users = await User.find() //give any random document
-        // const users = await User.find({})//find all the users from the collection
-
-        const users = await User.find({firstName:userName})
-        if(users.length === 0){
-            res.status(404).send("user not found");
-        }
-        else{
-            res.send(users);
-        }
-    } catch (error) {
-        res.status(400).send("something went wrong");
+        const user = req.user
+        //sending the connection request
+        console.log("sendgin a connection request.")
+        res.send(user.firstName+ " send the connection request.");
+    } 
+    catch (error) {
+        res.status(400).send("ERROR : "+error.message);
     }
-})
- 
-// delete data of the user from the database.
-app.delete('/user', async (req,res)=>{
-    const userId = req.body.userId;
-    try {
-        // const user = await User.findByIdAndDelete({_id:userId});
-        const user = await User.findByIdAndDelete(userId); //shorthand
-       res.send("user deleted successfully.");
-        
-    } catch (error) {
-        res.status(400).send("something went wrong");
-    }
-})
+});
 
-// update data of the user
-// also while we are updating the field which are not present in the schema then it will not update those field
-app.patch('/user/:userId', async (req,res)=>{
-    const userId =  req.params?.userId;
-    const data = req.body;
-    try {
-        // ALLOWED CHANGES -  we do not want that the user will change the unwanted changes like email,age etc
-        const ALLOWED_UPDATES = [
-            "lastName","gender","about","skills","photoUrl","age","password"
-        ];
-    
-        const isUpdateAllowed = Object.keys(data).every((k)=>
-            ALLOWED_UPDATES.includes(k)
-        );
-
-        if(!isUpdateAllowed){
-            throw new Error ("Update not allowed on these values");
-        }
-        if(data?.skills.length > 10){
-            throw new Error("Skills cannot be more than 10");
-        }
-        const user = await User.findByIdAndUpdate({_id:userId}, data, {ReturnDocument:"after",runValidators:true,}); //here the third parameter is the options (object) -> optional see 
-        // console.log(user);
-        res.send("user updated successfully.");
-    } catch (error) {
-        res.status(400).send("update failed "+error.message);
-    }
-})
- 
 
 connectDB().then(()=>{
     console.log("database connection established.");
