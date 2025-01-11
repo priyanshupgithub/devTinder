@@ -69,6 +69,11 @@ const userSchema = mongoose.Schema({
     timestamps:true,
 })
 
+// adding the index according to the usecase to make DB queries faster
+// userSchema.index({firstName:1});
+// userSchema.index({gender:1});
+
+
 
 userSchema.methods.getJWT = async function (){
     const user = this; //whoever the user is calling this getJWT method will get the token

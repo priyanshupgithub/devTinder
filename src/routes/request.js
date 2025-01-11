@@ -55,4 +55,32 @@ requestRouter.post("/request/send/:status/:toUserId", userAuth, async(req,res)=>
     }
 });
 
+requestRouter.post("/request/review/:status/:requestId", userAuth, async (req,res) =>{
+    try {
+        const loggedInUser = req.user;
+        const{status, requestId} = req.params;
+
+        const allowedStatus = ["accepted", "rejected"];
+        if(!allowedStatus.includes(status)){
+            return res.status(400).json({ message: "Status not allowed"});
+        }
+
+        const connectionRequest = await ConnectionRequest.findOne({
+            _id:requestId, //it is the id of the particular document which contains the record of who is sending the request to whom that the id of the particular document of connectionRequest collection 
+            toUserId : loggedInUser._id, //this line says that the user who will review the req will be the user who is now logged in means (agar ajay(fromUserId) ne elon(toUserId) ko req send ki ha(interested/ignored then elon(toUserId/(loggedInUser)) hi us request ko review kare) )
+            status : "interested", //it is hardcoded because interested status me hi review is possible , if the one user is ignored then the other user should not give the review
+        })
+
+        if(!connectionRequest){
+            return res.status(404).json({message : "Connection request not found."});
+        }
+
+        connectionRequest.status = status; //update the status from interesed to the review status(accepted/rejected) so that it can prevents from further updation that is when a staus is updated accepted then it cannot reject later. because then it does not find the status "interesed"which is hardcoded results in throw error
+        const data = await connectionRequest.save();
+        res.json({message:"Connection request "+ status, data});
+    } catch (error) {
+        
+    }
+})
+
 module.exports = requestRouter;
