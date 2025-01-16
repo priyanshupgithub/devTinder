@@ -59,7 +59,7 @@ authRouter.post('/login', async(req,res) =>{
             // add the token to the cookie and send the response to the user
             res.cookie("token", token,{httpOnly:true,expires:new Date(Date.now()+8*3600000)} );//cookies will expire after 8 hours
 
-            res.send("Login successfully.");
+            res.send(user);
         }
         else{
             throw new Error("Invalid credentials."); // don not write this -> Password is not correct
@@ -72,10 +72,20 @@ authRouter.post('/login', async(req,res) =>{
 
 authRouter.post("/logout", async (req,res) =>{
     //also we can do other activities like clean up or store logs to logout
-    res.cookie("token",null,{
-        expires: new Date(Date.now()),
+    try
+    {
+        res.cookie("token","",{
+        httpOnly: true, // Ensures the cookie is inaccessible to JavaScript
+        secure: process.env.NODE_ENV === "production", // Use secure cookies in production
+        sameSite: "strict", // Prevents CSRF attacks
+        expires: new Date(0), // Expire the cookie immediately
     });
-    res.send("Logout successfull.");
+    return res.status(200).send("Logout successful.");
+    }
+    catch(error){
+        console.error("Error in logout:", err);
+        res.status(500).send("Logout failed.");
+    }
 });
 
 module.exports = authRouter;
