@@ -135,7 +135,6 @@ const EditProfile = ({ user }) => {
       </div>}
     </>
   );
-  0;
 };
 
 export default EditProfile;
