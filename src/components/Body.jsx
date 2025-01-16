@@ -13,7 +13,7 @@ const Body = () => {
   const userData = useSelector((store) => store.user);
 
   const fetchUser = async () =>{
-    if(userData){
+    if(userData){  //if user data is there then dont call api(/profile/view)
       return;
     }
     try {
