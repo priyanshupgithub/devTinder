@@ -12,27 +12,27 @@ const Body = () => {
   const navigate = useNavigate();
   const userData = useSelector((store) => store.user);
 
-  const fetchUser = async () =>{
-    if(userData){  //if user data is there then dont call api(/profile/view)
+  const fetchUser = async () => {
+    if (userData) {
+      //if user data is there then dont call api(/profile/view)
       return;
     }
     try {
-      const res = await axios.get(BASE_URL+"/profile/view",{
-        withCredentials :true,
+      const res = await axios.get(BASE_URL + "/profile/view", {
+        withCredentials: true,
       });
       dispatch(addUser(res.data));
-      
     } catch (error) {
-      if(error.status === 401){
+      if (error.status === 401) {
         navigate("/login");
         // console.log(error);
       }
     }
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     fetchUser();
-  },[]);
+  }, []);
 
   return (
     <div>

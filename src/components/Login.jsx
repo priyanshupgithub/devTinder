@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
 import { useNavigate } from "react-router-dom";
-import {BASE_URL} from "../utils/constants";
+import { BASE_URL } from "../utils/constants";
 
 const Login = () => {
   const [emailId, setEmailId] = useState("mukesh@mail.com");
@@ -13,25 +13,24 @@ const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  
   const handleLogin = async () => {
     try {
       const res = await axios.post(
-        BASE_URL + "/login",  //backend url
+        BASE_URL + "/login", //backend url
         {
           emailId,
           password,
         },
         {
-          withCredentials: true, } // Required for sending cookies
+          withCredentials: true,
+        } // Required for sending cookies
       );
       // console.log(res.data);
       dispatch(addUser(res.data));
       navigate("/");
-
     } catch (error) {
       setError(error?.response?.data || "Something went wrong");
-        // console.log(error.message);
+      // console.log(error.message);
     }
   };
 
@@ -43,7 +42,7 @@ const Login = () => {
           <div>
             <label className="form-control w-full max-w-xs my-2">
               <div className="label">
-                <span className="label-text">Email ID : {emailId}</span>
+                <span className="label-text">Email ID :</span>
               </div>
               <input
                 type="text"
