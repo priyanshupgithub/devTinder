@@ -29,6 +29,8 @@
 - Toast message on save of Profile
 - See all the connections
 - New page - See all my connection Request
+- Feature Accept/Reject Connection Request
+
 
 Body
 NavBar
