@@ -43,7 +43,7 @@ const userSchema = mongoose.Schema({
     gender:{
         type:String,
         validate(value){   //here we added a custom validation function and this validator functions runs onyl on creating new user and does not run/validate when patch(existing data) so for run this we have to add it in the patch api in (options)
-            if(!["male","female","others"].includes(value)){
+            if(!["Male","Female","Others"].includes(value)){
                 throw new Error("Gender data is not valid");
             }
         }

@@ -9,7 +9,7 @@ const User = require('../models/User');
 
 const USER_SAFE_DATA = ["firstName","lastName","age","gender","photoUrl","skills","about"];
 
-userRouter.get("/user/request/received", userAuth , async (req,res)=>{  //get user request means all the request which are pending for (accepted/rejected)
+userRouter.get("/user/requests/received", userAuth , async (req,res)=>{  //get user request means all the request which are pending for (accepted/rejected)
     try {
         const loggedInUser = req.user;
         const connectionRequest = await ConnectionRequest.find({
