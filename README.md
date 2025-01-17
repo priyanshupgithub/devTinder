@@ -30,10 +30,4 @@
 - See all the connections
 - New page - See all my connection Request
 - Feature Accept/Reject Connection Request
-
-
-Body
-NavBar
-Route=/ => feed
-Router=/connections => Connections
-Router=/profile => Profile
+- Send/Ignore the user card from the feed

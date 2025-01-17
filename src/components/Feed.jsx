@@ -30,7 +30,11 @@ const Feed = () => {
 
   // Conditional rendering: Show a loading state or an error message if feed is empty
   if (!feed || feed.length === 0) {
-    return <div>Loading...</div>; // Show "Loading" while fetching or if no data is available
+    return (
+      <div className="flex justify-center my-10 font-bold">
+        No new Users are availabel on the fed.
+      </div>
+    ); // Show "Loading" while fetching or if no data is available
   }
 
   return (
