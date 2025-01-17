@@ -31,3 +31,5 @@
 - New page - See all my connection Request
 - Feature Accept/Reject Connection Request
 - Send/Ignore the user card from the feed
+- SignUp New User
+- End 2 End Testing

@@ -19,18 +19,18 @@ const UserCard = ({ user }) => {
     } catch (error) {}
   };
   return (
-    <div className="card bg-slate-900 w-[19rem] my-4 shadow-xl text-white">
+    <div className="card bg-slate-900 w-[16rem] my-4 shadow-xl text-white">
       <figure>
-        <img src={photoUrl} alt="Shoes" />
+        <img className="w-full max-h-72" src={photoUrl} alt="Photo" />
       </figure>
-      <div className="card-body">
-        <h2 className="card-title">{firstName + " " + lastName}</h2>
-        <p>
+      <div className="card-body p-3 text-center">
+        <h2 className="card-title text-center">{firstName + " " + lastName}</h2>
+        <p className="text-center">
           {age ? `${age} years old` : ""}
           {age && gender ? ", " : ""}
           {gender ? gender : ""}
         </p>
-        <p>{about}</p>
+        <p className="text-xs text-center">{about}</p>
         <div className="card-actions justify-center my-5">
           <button
             className="btn btn-primary"

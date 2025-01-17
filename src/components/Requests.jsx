@@ -6,7 +6,7 @@ import { addRequests, removeRequest } from "../utils/requestSlice";
 
 const Requests = () => {
   const requests = useSelector((store) => store.requests);
-  console.log(requests);
+  // console.log(requests);
   const dispatch = useDispatch();
   const [showButtons, setShowButtons] = useState(true);
 
@@ -41,7 +41,7 @@ const Requests = () => {
     return <h1 className="flex justify-center my-10">No Connections Found</h1>;
   }
   return (
-    <div className="text-center my-10">
+    <div className="text-center my-6">
       <h1 className="text-bold font-bold text-4xl">Requests</h1>
       {requests.map((requests) => {
         const { _id, firstName, lastName, photoUrl, age, gender, about } =
@@ -58,7 +58,7 @@ const Requests = () => {
                 alt="photo"
               />
             </div>
-            <div className="text-left mx-4">
+            <div className="text-left mx-4 max-w-[50%]">
               <h2 className="font-bold text-2xl">{`${firstName} ${lastName}`}</h2>
               {age && gender && <p>{age + " " + gender}</p>}
               <p>{about}</p>

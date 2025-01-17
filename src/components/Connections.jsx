@@ -29,7 +29,7 @@ const Connections = () => {
     return <h1>No Connections Found</h1>;
   }
   return (
-    <div className="text-center my-10">
+    <div className="text-center mt-6 mb-[125px]">
       <h1 className="text-bold font-bold text-4xl">Connections</h1>
       {connections.map((connection) => {
         const { _id, firstName, lastName, photoUrl, age, gender, about } =
@@ -37,19 +37,19 @@ const Connections = () => {
         return (
           <div
             key={_id}
-            className="flex m-4 p-4 rounded-lg bg-base-300 w-1/2 mx-auto"
+            className="flex m-4 p-4 rounded-lg bg-base-300 w-[75%] mx-auto"
           >
-            <div className="w-100">
+            <div className="w-100 flex justify-center items-center">
               <img
-                className="w-25 h-25 rounded-full"
+                className="rounded-full w-full h-full object-contain"
                 src={photoUrl}
                 alt="photo"
               />
             </div>
-            <div className="text-left mx-4">
+            <div className="flex flex-col justify-center text-left mx-4 max-w-[50%]">
               <h2 className="font-bold text-2xl">{`${firstName} ${lastName}`}</h2>
               {age && gender && <p>{age + " " + gender}</p>}
-              <p>{about}</p>
+              <p className="text-xs">{about}</p>
             </div>
           </div>
         );

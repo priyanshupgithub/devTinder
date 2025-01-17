@@ -29,10 +29,16 @@ const Feed = () => {
   }, []); // Empty dependency ensures it runs once on mount
 
   // Conditional rendering: Show a loading state or an error message if feed is empty
-  if (!feed || feed.length === 0) {
+  if (!feed) {
+    return (
+      <div className="flex justify-center my-10 font-bold">Loading Feed</div>
+    ); // Show "Loading" while fetching or if no data is available
+  }
+
+  if (feed.length <= 0) {
     return (
       <div className="flex justify-center my-10 font-bold">
-        No new Users are availabel on the fed.
+        No New Users are available on feed.
       </div>
     ); // Show "Loading" while fetching or if no data is available
   }

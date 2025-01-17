@@ -12,7 +12,7 @@ const feedSlice = createSlice({
       return newFeed;
     },
   },
-}); 
+});
 
 export const { addFeed, removeUserFromFeed } = feedSlice.actions;
 export default feedSlice.reducer;

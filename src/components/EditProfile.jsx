@@ -10,9 +10,9 @@ const EditProfile = ({ user }) => {
   const [firstName, setFirstName] = useState(user.firstName);
   const [lastName, setLastName] = useState(user.lastName);
   const [photoUrl, setPhotoUrl] = useState(user.photoUrl);
-  const [age, setAge] = useState(user.age);
-  const [gender, setGender] = useState(user.gender);
-  const [about, setAbout] = useState(user.about);
+  const [age, setAge] = useState(user.age || "");
+  const [gender, setGender] = useState(user.gender || "");
+  const [about, setAbout] = useState(user.about || "");
   const [error, setError] = useState("");
   const dispatch = useDispatch();
   const [showToast, setShowToast] = useState(false);
@@ -28,9 +28,9 @@ const EditProfile = ({ user }) => {
       );
       dispatch(addUser(res?.data));
       setShowToast(true);
-      setTimeout(()=>{
+      setTimeout(() => {
         setShowToast(false);
-      },2000)
+      }, 2000);
     } catch (error) {
       setError(error.response.data);
     }
@@ -95,12 +95,18 @@ const EditProfile = ({ user }) => {
                   <div className="label">
                     <span className="label-text">Gender: </span>
                   </div>
-                  <input
-                    type="text"
+                  <select
                     value={gender}
-                    className="input input-bordered w-full max-w-xs"
+                    className="select select-bordered w-full max-w-xs"
                     onChange={(e) => setGender(e.target.value)}
-                  />
+                  >
+                    <option value="" disabled>
+                      Select Gender
+                    </option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Others">Others</option>
+                  </select>
                 </label>
 
                 <label className="form-control w-full max-w-xs my-2">
@@ -128,11 +134,13 @@ const EditProfile = ({ user }) => {
           user={{ firstName, lastName, age, gender, about, photoUrl }}
         />
       </div>
-      { showToast && <div className="toast toast-top toast-center">
-        <div className="alert alert-success">
-          <span>Profile saved successfully.</span>
+      {showToast && (
+        <div className="toast toast-top toast-center">
+          <div className="alert alert-success">
+            <span>Profile saved successfully.</span>
+          </div>
         </div>
-      </div>}
+      )}
     </>
   );
 };
