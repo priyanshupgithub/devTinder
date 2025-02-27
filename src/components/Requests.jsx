@@ -43,9 +43,14 @@ const Requests = () => {
   return (
     <div className="text-center my-6">
       <h1 className="text-bold font-bold text-4xl">Requests</h1>
-      {requests.map((requests) => {
+      
+      {requests.map((request) => {
+        const { fromUserId } = request;
+        if (!fromUserId) {
+          return null; // Skip this request if fromUserId is null or undefined
+        }
         const { _id, firstName, lastName, photoUrl, age, gender, about } =
-          requests.fromUserId;
+          request.fromUserId;
         return (
           <div
             key={_id}
